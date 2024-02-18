@@ -1,0 +1,45 @@
+apiVersion: eksctl.io/v1alpha5
+availabilityZones:
+- eu-central-1a
+- eu-central-1b
+iam:
+  vpcResourceControllerPolicy: true
+  withOIDC: true
+
+kind: ClusterConfig
+kubernetesNetworkConfig:
+  ipFamily: IPv4
+
+metadata:
+  name: br-cluster
+  region: eu-central-1
+  version: "1.29"
+
+privateCluster:
+  enabled: false
+  skipEndpointCreation: false
+vpc:
+  autoAllocateIPv6: false
+  cidr: 192.168.0.0/16
+  clusterEndpoints:
+    privateAccess: false
+    publicAccess: true
+  manageSharedNodeSecurityGroupRules: true
+  nat:
+    gateway: Single
+
+nodeGroups:
+  - name: ng-bottlerocket
+    instanceType: m5.large
+    desiredCapacity: 1
+    amiFamily: Bottlerocket
+    ami: auto-ssm
+    iam:
+       attachPolicyARNs:
+          - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+          - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+          - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+          - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+    ssh:
+        allow: true
+        publicKeyPath: mykey.pub

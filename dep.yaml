@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: busyhttp
+  name: busyhttp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busyhttp
+  template:
+    metadata:
+      labels:
+        app: busyhttp
+    spec:
+      containers:
+      - image: otomato/busyhttp
+        name: busyhttp
+        resources: 
+          requests:
+            memory: "200Mi"
+            cpu: "250m"
+          limits:
+            memory: "200Mi"
+            cpu: "250m"
